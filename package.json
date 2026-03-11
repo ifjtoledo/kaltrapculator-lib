@@ -2,10 +2,25 @@
   "name": "kaltrapculator-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "./dist/kaltrapculator.umd.js",
+  "module": "./dist/kaltrapculator.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/kaltrapculator.es.js",
+      "require": "./dist/kaltrapculator.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "demo": "vite",
+    "design": "vite --open /design-lab/",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "preview": "vite preview"
   },
   "repository": {

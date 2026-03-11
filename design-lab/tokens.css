@@ -1,0 +1,20 @@
+:root {
+    --bg-1: #111315;
+    --bg-2: #21232a;
+    --panel: #4a4b4e;
+    --clap-border: #2f3032;
+    --clap-white: #f0f0ea;
+    --clap-blue-eye: #3eb4ff;
+    --text: #e6edf3;
+    --op-accent: #ff9f43;
+
+    --font-ui: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --radius-sm: 4px;
+    --radius-md: 12px;
+    --space-xs: 8px;
+    --space-sm: 12px;
+    --space-md: 20px;
+    --space-lg: 28px;
+
+    --motion-fast: 120ms;
+}

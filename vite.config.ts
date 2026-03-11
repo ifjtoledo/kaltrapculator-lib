@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     build: {
         lib: {
-            entry: 'src/main.ts',
+            entry: 'src/index.ts',
             name: 'KaltrapCulator',
             fileName: (format) => `kaltrapculator.${format}.js`,
         },

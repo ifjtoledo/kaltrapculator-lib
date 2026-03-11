@@ -1,0 +1,134 @@
+@import "./tokens.css";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 20% 20%, var(--bg-2), var(--bg-1));
+    color: var(--text);
+    font-family: var(--font-ui);
+}
+
+.lab-page {
+    width: min(960px, 92vw);
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.lab-header h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.lab-header p {
+    margin: 8px 0 0;
+    opacity: 0.85;
+}
+
+.stage {
+    margin-top: 28px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(4px);
+}
+
+.claptrap-body {
+    background: var(--panel);
+    border: 4px solid var(--clap-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    position: relative;
+    box-shadow: 8px 8px 0 var(--clap-border);
+    width: 280px;
+    overflow: hidden;
+}
+
+.claptrap-body::before {
+    content: "";
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: var(--clap-white);
+    border-top: 4px solid var(--clap-border);
+    border-bottom: 4px solid var(--clap-border);
+    z-index: 0;
+    opacity: 0.8;
+}
+
+.screen {
+    background: #2d2d2d;
+    color: #e8e8e8;
+    padding: 15px;
+    border: 4px solid var(--clap-border);
+    border-radius: var(--radius-sm);
+    text-align: right;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.5);
+    min-height: 1.5em;
+}
+
+.eye-indicator {
+    width: 15px;
+    height: 15px;
+    background: var(--clap-blue-eye);
+    border: 3px solid var(--clap-border);
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    box-shadow: 0 0 10px var(--clap-blue-eye);
+    z-index: 2;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+button {
+    background: var(--clap-white);
+    border: 3px solid var(--clap-border);
+    padding: var(--space-sm);
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: transform var(--motion-fast);
+    box-shadow: 3px 3px 0 var(--clap-border);
+}
+
+button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--clap-border);
+}
+
+.btn-op {
+    background: var(--op-accent);
+}
+
+.btn-equal {
+    background: var(--clap-blue-eye);
+    grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+    .stage {
+        padding: 18px;
+    }
+
+    .claptrap-body {
+        width: min(100%, 320px);
+    }
+}
