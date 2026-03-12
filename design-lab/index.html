@@ -10,44 +10,55 @@
 
 <body>
     <main class="lab-root">
-        <section class="host-field-preview" aria-label="Campo host de ejemplo">
-            <label for="demo-price">Precio</label>
-            <input id="demo-price" name="price" type="text" inputmode="decimal" autocomplete="off" placeholder="$ 0"
+        <section class="host-field-preview" aria-label="Campo host">
+            <label for="price-host">Monto</label>
+            <input id="price-host" name="price" type="text" inputmode="decimal" autocomplete="off" placeholder="$ 0"
                 data-claptrap data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
                 data-claptrap-allow-negative="false" />
         </section>
 
-        <section class="widget-shell" role="dialog" aria-modal="false" aria-label="Claptrap monetary widget">
+        <section class="widget-shell" role="dialog" aria-modal="false" aria-label="Claptrap widget" hidden>
             <header class="widget-header">
                 <h1>Claptrap Widget</h1>
-                <p>Monetary input assistant</p>
+                <p>Ingreso monetario asistido por teclado</p>
             </header>
 
-            <div class="widget-display" aria-live="polite">
-                <output class="display-value">$ 0</output>
-            </div>
+            <section class="widget-timeline" aria-label="Niveles confirmados">
+                <ol class="timeline-list">
+                    <li class="timeline-item">
+                        <span class="timeline-value">$ 1.000.000</span>
+                        <span class="timeline-op">%</span>
+                    </li>
+                </ol>
+            </section>
 
-            <div class="widget-keypad" aria-label="Teclado numerico">
-                <button type="button" data-key="7">7</button>
-                <button type="button" data-key="8">8</button>
-                <button type="button" data-key="9">9</button>
-                <button type="button" data-op="/">/</button>
+            <section class="widget-active-level" aria-label="Nivel activo">
+                <label for="widget-draft">Valor actual</label>
+                <input id="widget-draft" class="draft-input" type="text" inputmode="decimal" autocomplete="off"
+                    placeholder="$ 0" />
+            </section>
 
-                <button type="button" data-key="4">4</button>
-                <button type="button" data-key="5">5</button>
-                <button type="button" data-key="6">6</button>
-                <button type="button" data-op="*">*</button>
+            <section class="widget-operator-picker" aria-label="Seleccion de operador">
+                <ul class="operator-list" role="listbox" aria-label="Operadores">
+                    <li class="operator-item is-active" aria-selected="true" data-op="%">%</li>
+                    <li class="operator-item" aria-selected="false" data-op="+">+</li>
+                    <li class="operator-item" aria-selected="false" data-op="-">-</li>
+                    <li class="operator-item" aria-selected="false" data-op="*">*</li>
+                    <li class="operator-item" aria-selected="false" data-op="/">/</li>
+                </ul>
+            </section>
 
-                <button type="button" data-key="1">1</button>
-                <button type="button" data-key="2">2</button>
-                <button type="button" data-key="3">3</button>
-                <button type="button" data-op="-">-</button>
+            <section class="widget-preview" aria-live="polite" aria-label="Resultado provisional">
+                <p class="preview-label">Preview</p>
+                <output class="preview-value">$ 600.000</output>
+            </section>
 
-                <button type="button" data-key="0">0</button>
-                <button type="button" data-key=".">.</button>
-                <button type="button" data-op="+">+</button>
-                <button type="button" data-action="clear">C</button>
-            </div>
+            <section class="widget-hints" aria-label="Guia de teclado">
+                <p>↓ nuevo nivel</p>
+                <p>← → operador</p>
+                <p>Enter confirmar</p>
+                <p>Esc cancelar</p>
+            </section>
 
             <footer class="widget-actions">
                 <button type="button" data-action="cancel">Cancelar</button>
