@@ -1,53 +1,20 @@
-# Brief Visual - Kaltrapculator
+# Brief Visual - En Blanco
 
 ## Vision
 
-Calculadora con identidad ClapTrap: robusta, juguetona, tecnologica y legible.
-La estetica debe sentirse "lista para usar" desde el primer render.
+[Describe aquí tu visión]
 
 ## Principios de diseno
 
-- Silueta clara y reconocible.
-- Contraste alto en datos criticos (pantalla y botones).
-- Jerarquia visual simple: pantalla > operadores > numericos.
-- Decoracion controlada: no saturar con efectos.
+[Define tus principios]
 
-## Paleta oficial (v1)
+## Paleta
 
-- `--bg-1`: fondo profundo.
-- `--bg-2`: degradado secundario.
-- `--panel`: cuerpo del componente.
-- `--clap-border`: contornos principales.
-- `--clap-white`: superficies claras.
-- `--clap-blue-eye`: acento principal.
-- `--text`: texto general del escenario.
-- `--op-accent`: acento para operadores.
+[Elige colores de tokens.css]
 
-## Tipografia
+## Criterios de aceptacion
 
-- Principal: `"Segoe UI", Roboto, Helvetica, Arial, sans-serif`.
-- Pesos:
-  - Titulos: 700.
-  - Botones: 700.
-  - Texto auxiliar: 400.
-
-## Estados visuales minimos
-
-- `default`: estado base.
-- `hover`: leve elevacion o brillo.
-- `active`: presion mecanica clara.
-- `focus-visible`: anillo visible para accesibilidad.
-- `disabled` (futuro): atenuado.
-
-## Motion
-
-- Duracion corta: `100ms-180ms`.
-- Curva recomendada: `ease-out`.
-- Usar motion solo para feedback funcional.
-
-## Criterios de aceptacion por iteracion
-
-- Coherencia visual mantenida.
+[Qué debe cumplir visualmente]
 - Legibilidad de pantalla en desktop y movil.
 - Botones con feedback claro.
 - No usar hex sueltos fuera de `tokens.css`.
