@@ -9,7 +9,52 @@
 </head>
 
 <body>
-    <div class="canvas"></div>
+    <main class="lab-root">
+        <section class="host-field-preview" aria-label="Campo host de ejemplo">
+            <label for="demo-price">Precio</label>
+            <input id="demo-price" name="price" type="text" inputmode="decimal" autocomplete="off" placeholder="$ 0"
+                data-claptrap data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                data-claptrap-allow-negative="false" />
+        </section>
+
+        <section class="widget-shell" role="dialog" aria-modal="false" aria-label="Claptrap monetary widget">
+            <header class="widget-header">
+                <h1>Claptrap Widget</h1>
+                <p>Monetary input assistant</p>
+            </header>
+
+            <div class="widget-display" aria-live="polite">
+                <output class="display-value">$ 0</output>
+            </div>
+
+            <div class="widget-keypad" aria-label="Teclado numerico">
+                <button type="button" data-key="7">7</button>
+                <button type="button" data-key="8">8</button>
+                <button type="button" data-key="9">9</button>
+                <button type="button" data-op="/">/</button>
+
+                <button type="button" data-key="4">4</button>
+                <button type="button" data-key="5">5</button>
+                <button type="button" data-key="6">6</button>
+                <button type="button" data-op="*">*</button>
+
+                <button type="button" data-key="1">1</button>
+                <button type="button" data-key="2">2</button>
+                <button type="button" data-key="3">3</button>
+                <button type="button" data-op="-">-</button>
+
+                <button type="button" data-key="0">0</button>
+                <button type="button" data-key=".">.</button>
+                <button type="button" data-op="+">+</button>
+                <button type="button" data-action="clear">C</button>
+            </div>
+
+            <footer class="widget-actions">
+                <button type="button" data-action="cancel">Cancelar</button>
+                <button type="button" data-action="apply">Aplicar</button>
+            </footer>
+        </section>
+    </main>
 </body>
 
 </html>
