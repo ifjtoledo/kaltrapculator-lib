@@ -7,194 +7,181 @@
 }
 
 :root {
-    --layout-max: 820px;
+    --layout-max: 420px;
     --radius: 12px;
-    --space-1: 8px;
-    --space-2: 12px;
-    --space-3: 16px;
-    --space-4: 24px;
-    --border: 1px solid #2f3647;
-    --bg: #0d111a;
-    --surface: #171e2b;
-    --surface-2: #111826;
-    --text: #e6ecff;
-    --muted: #9aa8c3;
-    --focus: #6ea8ff;
+    --space-1: 6px;
+    --space-2: 10px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --border: 1px solid #2c2c2c;
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --surface-2: #201f1f;
+    --text: #f6f6f6;
+    --muted: #b3b3b3;
+    --focus: #4d9fe1;
 }
 
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: var(--font-ui);
     color: var(--text);
     background: var(--bg);
 }
 
-.lab-root {
+.lab {
     width: min(var(--layout-max), 92vw);
     margin: 0 auto;
-    padding: 40px 0;
-    display: grid;
-    gap: var(--space-4);
-}
-
-.host-field-preview {
-    display: grid;
-    gap: var(--space-1);
-    max-width: 420px;
-}
-
-.host-field-preview label {
-    font-size: 0.92rem;
-    color: var(--muted);
-}
-
-.host-field-preview input,
-.draft-input {
-    width: 100%;
-    min-height: 44px;
-    padding: 0 var(--space-2);
-    border: var(--border);
-    border-radius: 10px;
-    font-size: 1rem;
-    background: var(--surface);
-    color: var(--text);
-}
-
-.host-field-preview input:focus-visible,
-.draft-input:focus-visible,
-.widget-actions button:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-}
-
-.widget-shell[hidden] {
-    display: none;
-}
-
-.widget-shell {
-    max-width: 560px;
-    border: var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    padding: var(--space-3);
+    padding: 24px 0;
     display: grid;
     gap: var(--space-3);
 }
 
-.widget-header h1 {
-    margin: 0;
-    font-size: 1.1rem;
+.lab__host-field {
+    display: grid;
+    gap: 0;
+    width: min(360px, 92vw);
 }
 
-.widget-header p {
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 0.92rem;
-}
-
-.widget-timeline,
-.widget-active-level,
-.widget-operator-picker,
-.widget-preview,
-.widget-hints {
+.lab__host-input,
+.widget__draft-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 var(--space-2);
     border: var(--border);
     border-radius: 10px;
-    padding: var(--space-2);
-    background: var(--surface-2);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    background: var(--surface);
+    color: var(--text);
 }
 
-.timeline-list {
-    margin: 0;
-    padding-left: 18px;
+.lab__host-input:focus-visible,
+.widget__draft-input:focus-visible,
+.widget__actions button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.widget[hidden] {
+    display: none;
+}
+
+.widget {
+    width: min(360px, 92vw);
+    max-height: min(560px, 88vh);
+    overflow: auto;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 10px;
     display: grid;
-    gap: 6px;
-}
-
-.timeline-item {
-    display: flex;
-    justify-content: space-between;
     gap: var(--space-2);
 }
 
-.widget-active-level {
-    display: grid;
-    gap: var(--space-1);
+.widget.widget--ready-to-apply {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 2px rgba(77, 159, 225, 0.24);
 }
 
-.widget-active-level label {
-    font-size: 0.9rem;
+.widget__timeline,
+.widget__active-level,
+.widget__operator-picker,
+.widget__preview {
+    border: var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--surface-2);
+}
+
+.widget__timeline-list {
+    margin: 0;
+    padding-left: 14px;
+    display: grid;
+    gap: 4px;
+}
+
+.widget__timeline-list:empty::before {
+    content: "";
+}
+
+.widget__timeline-item {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: 0.95rem;
     color: var(--muted);
 }
 
-.operator-list {
+.widget__timeline-value {
+    font-weight: 600;
+}
+
+.widget__active-level {
+    display: grid;
+    gap: 0;
+}
+
+.widget__operator-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(5, minmax(44px, 1fr));
-    gap: var(--space-1);
+    grid-template-columns: repeat(5, minmax(36px, 1fr));
+    gap: 6px;
 }
 
-.operator-item {
-    min-height: 40px;
+.widget__operator-item {
+    min-height: 32px;
     display: grid;
     place-items: center;
     border: var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     user-select: none;
-}
-
-.operator-item.is-active {
-    border-color: var(--focus);
-    background: #24344f;
-    color: #cfe1ff;
-    font-weight: 600;
-}
-
-.preview-label {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--muted);
-}
-
-.preview-value {
-    display: block;
-    margin-top: 4px;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
 }
 
-.widget-hints {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
-    gap: var(--space-1) var(--space-2);
+.widget__operator-item.widget__operator-item--active {
+    border-color: var(--focus);
+    background: rgba(77, 159, 225, 0.22);
+    color: #f6f6f6;
+    font-weight: 600;
 }
 
-.widget-hints p {
-    margin: 0;
-    font-size: 0.88rem;
-    color: var(--muted);
+.widget__preview-value {
+    display: block;
+    margin-top: 0;
+    font-size: clamp(1.5rem, 4.5vw, 2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
 }
 
-.widget-actions {
+.widget__actions {
     display: flex;
     justify-content: flex-end;
-    gap: var(--space-2);
+    gap: 6px;
 }
 
-.widget-actions button {
-    min-height: 40px;
-    padding: 0 14px;
+.widget__actions button {
+    min-height: 28px;
+    min-width: 40px;
+    padding: 0 10px;
     border: var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--surface-2);
     color: var(--text);
     cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: lowercase;
 }
 
-.widget-actions button[data-action="apply"] {
-    background: #3b82f6;
-    color: #081225;
-    border-color: #3b82f6;
+.widget__actions button[data-action="apply"] {
+    background: #4d9fe1;
+    color: #121212;
+    border-color: #4d9fe1;
 }

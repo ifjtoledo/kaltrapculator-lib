@@ -5,67 +5,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Design Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./lab.css" />
 </head>
 
 <body>
-    <main class="lab-root">
-        <section class="host-field-preview" aria-label="Campo host">
-            <label for="price-host">Monto</label>
-            <input id="price-host" name="price" type="text" inputmode="decimal" autocomplete="off" placeholder="$ 0"
-                data-claptrap data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+    <main class="lab">
+        <section class="lab__host-field" aria-label="Campo host">
+            <input class="lab__host-input" id="price-host" name="price" type="text" inputmode="decimal"
+                autocomplete="off" placeholder="$ 0" aria-label="Monto monetario" data-claptrap
+                data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
                 data-claptrap-allow-negative="false" />
         </section>
 
-        <section class="widget-shell" role="dialog" aria-modal="false" aria-label="Claptrap widget" hidden>
-            <header class="widget-header">
-                <h1>Claptrap Widget</h1>
-                <p>Ingreso monetario asistido por teclado</p>
-            </header>
+        <section class="widget" role="dialog" aria-modal="false" aria-label="Claptrap widget" hidden>
+            <section class="widget__timeline" aria-label="Niveles confirmados">
+                <ol class="widget__timeline-list"></ol>
+            </section>
 
-            <section class="widget-timeline" aria-label="Niveles confirmados">
-                <ol class="timeline-list">
-                    <li class="timeline-item">
-                        <span class="timeline-value">$ 1.000.000</span>
-                        <span class="timeline-op">%</span>
+            <section class="widget__active-level" aria-label="Nivel activo">
+                <input id="widget-draft" class="widget__draft-input" type="text" inputmode="decimal" autocomplete="off"
+                    aria-label="Valor activo" placeholder="$ 0" />
+            </section>
+
+            <section class="widget__operator-picker" aria-label="Seleccion de operador">
+                <ul class="widget__operator-list" role="listbox" aria-label="Operadores">
+                    <li class="widget__operator-item widget__operator-item--active" aria-selected="true" data-op="%">%
                     </li>
-                </ol>
-            </section>
-
-            <section class="widget-active-level" aria-label="Nivel activo">
-                <label for="widget-draft">Valor actual</label>
-                <input id="widget-draft" class="draft-input" type="text" inputmode="decimal" autocomplete="off"
-                    placeholder="$ 0" />
-            </section>
-
-            <section class="widget-operator-picker" aria-label="Seleccion de operador">
-                <ul class="operator-list" role="listbox" aria-label="Operadores">
-                    <li class="operator-item is-active" aria-selected="true" data-op="%">%</li>
-                    <li class="operator-item" aria-selected="false" data-op="+">+</li>
-                    <li class="operator-item" aria-selected="false" data-op="-">-</li>
-                    <li class="operator-item" aria-selected="false" data-op="*">*</li>
-                    <li class="operator-item" aria-selected="false" data-op="/">/</li>
+                    <li class="widget__operator-item" aria-selected="false" data-op="+">+</li>
+                    <li class="widget__operator-item" aria-selected="false" data-op="-">-</li>
+                    <li class="widget__operator-item" aria-selected="false" data-op="*">*</li>
+                    <li class="widget__operator-item" aria-selected="false" data-op="/">/</li>
                 </ul>
             </section>
 
-            <section class="widget-preview" aria-live="polite" aria-label="Resultado provisional">
-                <p class="preview-label">Preview</p>
-                <output class="preview-value">$ 600.000</output>
+            <section class="widget__preview" aria-live="polite" aria-label="Resultado provisional">
+                <output class="widget__preview-value">$ 0</output>
             </section>
 
-            <section class="widget-hints" aria-label="Guia de teclado">
-                <p>↓ nuevo nivel</p>
-                <p>← → operador</p>
-                <p>Enter confirmar</p>
-                <p>Esc cancelar</p>
-            </section>
-
-            <footer class="widget-actions">
-                <button type="button" data-action="cancel">Cancelar</button>
-                <button type="button" data-action="apply">Aplicar</button>
+            <footer class="widget__actions">
+                <button type="button" data-action="cancel" aria-label="Cancelar" title="Cancelar">x</button>
+                <button type="button" data-action="apply" aria-label="Aplicar" title="Aplicar">ok</button>
             </footer>
         </section>
     </main>
+    <script type="module" src="./lab.ts"></script>
 </body>
 
 </html>
