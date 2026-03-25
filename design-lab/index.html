@@ -13,36 +13,72 @@
 
 <body>
     <main class="lab">
-        <fieldset class="lab__config">
-            <legend class="lab__config-legend">Modo del widget</legend>
-            <label class="lab__toggle">
-                <input type="checkbox" id="calc-mode-toggle" checked />
-                <span>Operaciones matemáticas</span>
-            </label>
-        </fieldset>
+        <nav class="lab__tabs" role="tablist" aria-label="Modo de calculadora">
+            <button class="lab__tab lab__tab--active" role="tab" id="tab-full" aria-selected="true"
+                aria-controls="panel-full">Completo</button>
+            <button class="lab__tab" role="tab" id="tab-basic" aria-selected="false"
+                aria-controls="panel-basic">Básico</button>
+        </nav>
 
-        <section class="lab__host-field" aria-label="Campo host">
-            <input class="lab__host-input" id="price-host" name="price" type="text" inputmode="decimal"
-                autocomplete="off" placeholder="$ 0" aria-label="Monto monetario" aria-haspopup="dialog"
-                aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap data-claptrap-currency="$"
-                data-claptrap-decimals="2" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false"
-                data-claptrap-calc="full" />
+        <!-- ─── Panel: modo completo (operaciones matemáticas) ─── -->
+        <section class="lab__panel" id="panel-full" role="tabpanel" aria-labelledby="tab-full">
+            <section class="lab__host-field" aria-label="Campo host">
+                <label class="lab__host-label">Precio (currency)</label>
+                <input class="lab__host-input" id="price-host" name="price" type="text" inputmode="decimal"
+                    autocomplete="off" placeholder="$ 0" aria-label="Monto monetario" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false" data-claptrap-calc="full" />
+            </section>
+
+            <section class="lab__host-field" aria-label="Campo numerico puro">
+                <label class="lab__host-label">Cantidad (numeric)</label>
+                <input class="lab__host-input" id="quantity-host" name="quantity" type="number" step="0.01"
+                    autocomplete="off" placeholder="0" aria-label="Cantidad numerica" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-mode="numeric" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false" data-claptrap-calc="full" />
+            </section>
+
+            <section class="lab__host-field" aria-label="Campo numerico estricto entero">
+                <label class="lab__host-label">Unidades (numeric-strict)</label>
+                <input class="lab__host-input" id="units-host" name="units" type="number" step="1" autocomplete="off"
+                    placeholder="0" aria-label="Unidades enteras" aria-haspopup="dialog" aria-controls="claptrap-widget"
+                    aria-expanded="false" readonly data-claptrap data-claptrap-mode="numeric-strict"
+                    data-claptrap-decimals="0" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false"
+                    data-claptrap-calc="full" />
+            </section>
         </section>
 
-        <section class="lab__host-field" aria-label="Campo numerico puro">
-            <input class="lab__host-input" id="quantity-host" name="quantity" type="number" step="0.01"
-                autocomplete="off" placeholder="0" aria-label="Cantidad numerica" aria-haspopup="dialog"
-                aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
-                data-claptrap-mode="numeric" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
-                data-claptrap-allow-negative="false" data-claptrap-calc="full" />
-        </section>
+        <!-- ─── Panel: modo básico (solo asistencia de formato) ─── -->
+        <section class="lab__panel lab__panel--hidden" id="panel-basic" role="tabpanel" aria-labelledby="tab-basic"
+            hidden>
+            <section class="lab__host-field" aria-label="Campo host basico">
+                <label class="lab__host-label">Precio (currency)</label>
+                <input class="lab__host-input" id="price-host-basic" name="price_basic" type="text" inputmode="decimal"
+                    autocomplete="off" placeholder="$ 0" aria-label="Monto monetario basico" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false" data-claptrap-calc="basic" />
+            </section>
 
-        <section class="lab__host-field" aria-label="Campo numerico estricto entero">
-            <input class="lab__host-input" id="units-host" name="units" type="number" step="1" autocomplete="off"
-                placeholder="0" aria-label="Unidades enteras" aria-haspopup="dialog" aria-controls="claptrap-widget"
-                aria-expanded="false" readonly data-claptrap data-claptrap-mode="numeric-strict"
-                data-claptrap-decimals="0" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false"
-                data-claptrap-calc="full" />
+            <section class="lab__host-field" aria-label="Campo numerico basico">
+                <label class="lab__host-label">Cantidad (numeric)</label>
+                <input class="lab__host-input" id="quantity-host-basic" name="quantity_basic" type="number" step="0.01"
+                    autocomplete="off" placeholder="0" aria-label="Cantidad numerica basica" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-mode="numeric" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false" data-claptrap-calc="basic" />
+            </section>
+
+            <section class="lab__host-field" aria-label="Campo numerico estricto basico">
+                <label class="lab__host-label">Unidades (numeric-strict)</label>
+                <input class="lab__host-input" id="units-host-basic" name="units_basic" type="number" step="1"
+                    autocomplete="off" placeholder="0" aria-label="Unidades enteras basicas" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-mode="numeric-strict" data-claptrap-decimals="0" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false" data-claptrap-calc="basic" />
+            </section>
         </section>
 
         <section id="claptrap-widget" class="widget" role="dialog" aria-modal="true" aria-label="Claptrap widget"

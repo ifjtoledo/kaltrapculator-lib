@@ -212,38 +212,63 @@ body.lab--modal-open::before {
     border-color: #4d9fe1;
 }
 
-/* ─── Config fieldset ─── */
+/* ─── Tabs ─── */
 
-.lab__config {
+.lab__tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: min(360px, 92vw);
     border: var(--border);
     border-radius: 8px;
-    padding: var(--space-2) var(--space-3);
+    overflow: hidden;
     background: var(--surface);
-    width: min(360px, 92vw);
 }
 
-.lab__config-legend {
-    font-size: 0.75rem;
+.lab__tab {
+    min-height: 38px;
+    padding: 0 var(--space-3);
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 100ms, color 100ms;
+}
+
+.lab__tab:hover {
+    color: var(--text);
+}
+
+.lab__tab--active {
+    background: rgba(77, 159, 225, 0.15);
+    color: var(--text);
+    box-shadow: inset 0 -2px 0 var(--focus);
+}
+
+.lab__tab:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+}
+
+.lab__panel--hidden {
+    display: none;
+}
+
+/* ─── Host label ─── */
+
+.lab__host-label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--muted);
-    padding: 0 var(--space-1);
-}
-
-.lab__toggle {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: 0.9rem;
-    cursor: pointer;
-    user-select: none;
-}
-
-.lab__toggle input[type="checkbox"] {
-    accent-color: var(--focus);
-    width: 16px;
-    height: 16px;
 }
 
 /* ─── Hidden widget sections ─── */

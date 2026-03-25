@@ -9,6 +9,9 @@ function setupDOM(): {
     priceHost: HTMLInputElement;
     quantityHost: HTMLInputElement;
     unitsHost: HTMLInputElement;
+    priceHostBasic: HTMLInputElement;
+    quantityHostBasic: HTMLInputElement;
+    unitsHostBasic: HTMLInputElement;
     widget: HTMLElement;
     draftInput: HTMLInputElement;
     previewValue: HTMLOutputElement;
@@ -16,6 +19,8 @@ function setupDOM(): {
     cancelButton: HTMLButtonElement;
     applyButton: HTMLButtonElement;
     operatorItems: HTMLElement[];
+    operatorPicker: HTMLElement | null;
+    timelineSection: HTMLElement | null;
 } {
     document.body.innerHTML = `
         <main class="lab">
@@ -44,6 +49,33 @@ function setupDOM(): {
                     data-claptrap-mode="numeric-strict" data-claptrap-decimals="0" data-claptrap-locale="es-CO"
                     data-claptrap-allow-negative="false"
                     data-claptrap-calc="full" />
+            </section>
+
+            <section class="lab__host-field">
+                <input class="lab__host-input" id="price-host-basic" name="price_basic" type="text"
+                    placeholder="$ 0" aria-label="Monto monetario basico" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-currency="$" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false"
+                    data-claptrap-calc="basic" />
+            </section>
+
+            <section class="lab__host-field">
+                <input class="lab__host-input" id="quantity-host-basic" name="quantity_basic" type="number" step="0.01"
+                    placeholder="0" aria-label="Cantidad numerica basica" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-mode="numeric" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false"
+                    data-claptrap-calc="basic" />
+            </section>
+
+            <section class="lab__host-field">
+                <input class="lab__host-input" id="units-host-basic" name="units_basic" type="number" step="1"
+                    placeholder="0" aria-label="Unidades enteras basicas" aria-haspopup="dialog"
+                    aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
+                    data-claptrap-mode="numeric-strict" data-claptrap-decimals="0" data-claptrap-locale="es-CO"
+                    data-claptrap-allow-negative="false"
+                    data-claptrap-calc="basic" />
             </section>
 
             <section id="claptrap-widget" class="widget" role="dialog" aria-modal="true"
@@ -83,6 +115,9 @@ function setupDOM(): {
     const priceHost = document.getElementById('price-host') as HTMLInputElement;
     const quantityHost = document.getElementById('quantity-host') as HTMLInputElement;
     const unitsHost = document.getElementById('units-host') as HTMLInputElement;
+    const priceHostBasic = document.getElementById('price-host-basic') as HTMLInputElement;
+    const quantityHostBasic = document.getElementById('quantity-host-basic') as HTMLInputElement;
+    const unitsHostBasic = document.getElementById('units-host-basic') as HTMLInputElement;
     const widget = document.getElementById('claptrap-widget') as HTMLElement;
     const draftInput = document.getElementById('widget-draft') as HTMLInputElement;
     const previewValue = document.querySelector('.widget__preview-value') as HTMLOutputElement;
@@ -100,6 +135,9 @@ function setupDOM(): {
         priceHost,
         quantityHost,
         unitsHost,
+        priceHostBasic,
+        quantityHostBasic,
+        unitsHostBasic,
         widget,
         draftInput,
         previewValue,
@@ -540,6 +578,9 @@ function initializeLabLogic(dom: ReturnType<typeof setupDOM>) {
         priceHost,
         quantityHost,
         unitsHost,
+        priceHostBasic,
+        quantityHostBasic,
+        unitsHostBasic,
         widget,
         draftInput,
         previewValue,
@@ -746,7 +787,7 @@ function initializeLabLogic(dom: ReturnType<typeof setupDOM>) {
     }
 
     // Attach event listeners
-    [priceHost, quantityHost, unitsHost].forEach((host) => {
+    [priceHost, quantityHost, unitsHost, priceHostBasic, quantityHostBasic, unitsHostBasic].forEach((host) => {
         host.addEventListener('keydown', (event: KeyboardEvent) => {
             if (['Enter', ' ', 'ArrowDown'].includes(event.key)) {
                 event.preventDefault();
@@ -987,21 +1028,13 @@ describe('Round-trip: numeric-strict host (type="number" step="1")', () => {
     });
 });
 
-/* ─── Helper: sets host to basic mode ─── */
-
-function setBasicMode(host: HTMLInputElement) {
-    host.dataset.claptrapCalc = 'basic';
-}
-
-/* ─── Helper: type + single Enter for basic mode ─── */
+/* ─── Helper: type + single Enter for basic mode (native basic inputs) ─── */
 
 function typeAndInjectBasic(
     dom: ReturnType<typeof setupDOM>,
     host: HTMLInputElement,
     value: string
 ): string {
-    setBasicMode(host);
-
     dispatchKeyEvent(host, 'Enter');
 
     dom.draftInput.value = value;
@@ -1028,15 +1061,13 @@ describe('Basic mode: operator picker and timeline hidden', () => {
     });
 
     it('hides operator picker when calc mode is basic', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         expect(dom.operatorPicker!.hidden).toBe(true);
     });
 
     it('hides timeline when calc mode is basic', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         expect(dom.timelineSection!.hidden).toBe(true);
     });
@@ -1067,19 +1098,19 @@ describe('Basic mode: single Enter injects value', () => {
     });
 
     it('injects on single Enter (currency)', () => {
-        const result = typeAndInjectBasic(dom, dom.priceHost, '500');
+        const result = typeAndInjectBasic(dom, dom.priceHostBasic, '500');
         expect(result).toContain('500');
         expect(dom.widget.hidden).toBe(true);
     });
 
     it('injects on single Enter (numeric)', () => {
-        const result = typeAndInjectBasic(dom, dom.quantityHost, '11000');
+        const result = typeAndInjectBasic(dom, dom.quantityHostBasic, '11000');
         expect(result).toBe('11000');
         expect(dom.widget.hidden).toBe(true);
     });
 
     it('injects on single Enter (numeric-strict)', () => {
-        const result = typeAndInjectBasic(dom, dom.unitsHost, '42');
+        const result = typeAndInjectBasic(dom, dom.unitsHostBasic, '42');
         expect(result).toBe('42');
         expect(dom.widget.hidden).toBe(true);
     });
@@ -1098,8 +1129,7 @@ describe('Basic mode: ignores operator/level keys', () => {
     });
 
     it('ArrowLeft does not change operator in basic mode', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         const activeBefore = dom.operatorItems.findIndex(
             (item) => item.classList.contains('widget__operator-item--active')
@@ -1115,8 +1145,7 @@ describe('Basic mode: ignores operator/level keys', () => {
     });
 
     it('ArrowRight does not change operator in basic mode', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         const activeBefore = dom.operatorItems.findIndex(
             (item) => item.classList.contains('widget__operator-item--active')
@@ -1132,8 +1161,7 @@ describe('Basic mode: ignores operator/level keys', () => {
     });
 
     it('ArrowDown does not push level in basic mode', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         dom.draftInput.value = '100';
         dom.draftInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1144,12 +1172,50 @@ describe('Basic mode: ignores operator/level keys', () => {
     });
 
     it('Backspace does not pop level in basic mode', () => {
-        setBasicMode(dom.priceHost);
-        dispatchKeyEvent(dom.priceHost, 'Enter');
+        dispatchKeyEvent(dom.priceHostBasic, 'Enter');
 
         dispatchKeyEvent(dom.widget, 'Backspace');
 
         // Widget still open, no crash
         expect(dom.widget.hidden).toBe(false);
+    });
+});
+
+describe('Basic mode round-trip: native basic inputs', () => {
+    let dom: ReturnType<typeof setupDOM>;
+
+    beforeEach(() => {
+        dom = setupDOM();
+        initializeLabLogic(dom);
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('currency basic: injects 11000 correctly', () => {
+        const result = typeAndInjectBasic(dom, dom.priceHostBasic, '11000');
+        expect(result).toContain('11');
+        expect(result).toContain('000');
+    });
+
+    it('numeric basic: injects 11000 without dot corruption', () => {
+        const result = typeAndInjectBasic(dom, dom.quantityHostBasic, '11000');
+        expect(result).toBe('11000');
+    });
+
+    it('numeric basic: injects 1500000 without grouping', () => {
+        const result = typeAndInjectBasic(dom, dom.quantityHostBasic, '1500000');
+        expect(result).toBe('1500000');
+    });
+
+    it('numeric-strict basic: injects 11000 as clean integer', () => {
+        const result = typeAndInjectBasic(dom, dom.unitsHostBasic, '11000');
+        expect(result).toBe('11000');
+    });
+
+    it('numeric-strict basic: injects 99999 correctly', () => {
+        const result = typeAndInjectBasic(dom, dom.unitsHostBasic, '99999');
+        expect(result).toBe('99999');
     });
 });

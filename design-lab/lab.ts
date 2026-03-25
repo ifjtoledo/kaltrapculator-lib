@@ -33,7 +33,9 @@ const operatorItems = Array.from(
 
 const operatorPicker = document.querySelector<HTMLElement>('.widget__operator-picker');
 const timelineSection = document.querySelector<HTMLElement>('.widget__timeline');
-const calcModeToggle = document.querySelector<HTMLInputElement>('#calc-mode-toggle');
+
+const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab__tab'));
+const panels = Array.from(document.querySelectorAll<HTMLElement>('.lab__panel'));
 
 if (!operatorItems.length) {
     throw new Error('At least one operator is required.');
@@ -385,9 +387,20 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
 syncPreview();
 paintOperator(operatorIndex);
 
-calcModeToggle?.addEventListener('change', () => {
-    const calc: CalcMode = calcModeToggle.checked ? 'full' : 'basic';
-    hostInputs.forEach((host) => {
-        host.dataset.claptrapCalc = calc;
+tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+        tabs.forEach((t) => {
+            t.classList.remove('lab__tab--active');
+            t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('lab__tab--active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const targetId = tab.getAttribute('aria-controls');
+        panels.forEach((p) => {
+            const isTarget = p.id === targetId;
+            p.hidden = !isTarget;
+            p.classList.toggle('lab__panel--hidden', !isTarget);
+        });
     });
 });
