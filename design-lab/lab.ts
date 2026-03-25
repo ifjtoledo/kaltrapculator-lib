@@ -73,7 +73,7 @@ function isFullMode(): boolean {
 function applyCalcModeUI(): void {
     const full = isFullMode();
     if (operatorPicker) operatorPicker.hidden = !full;
-    if (timelineSection) timelineSection.hidden = !full;
+    if (timelineSection) timelineSection.hidden = !full || levels.length === 0;
 }
 
 function getHostConfig(host: HTMLInputElement): HostConfig {
@@ -148,6 +148,10 @@ function computePreviewNumber(): number {
 
 function renderTimeline(): void {
     timelineList.innerHTML = '';
+
+    if (timelineSection && isFullMode()) {
+        timelineSection.hidden = levels.length === 0;
+    }
 
     levels.forEach((level) => {
         const item = document.createElement('li');
@@ -420,6 +424,7 @@ function applyTheme(theme: string): void {
     } catch {
         // Storage unavailable — silently degrade
     }
+    draftInput.focus();
 }
 
 // Restore saved theme
