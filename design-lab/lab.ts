@@ -1,7 +1,6 @@
 import {
     formatNumberForDisplay,
     formatNumberForHost,
-    formatRawForDraftInput,
     formatRawForDisplay,
     normalizeHostValue,
     parseRawNumber,
@@ -32,6 +31,10 @@ const operatorItems = Array.from(
     document.querySelectorAll<HTMLElement>('.widget__operator-item')
 );
 
+const operatorPicker = document.querySelector<HTMLElement>('.widget__operator-picker');
+const timelineSection = document.querySelector<HTMLElement>('.widget__timeline');
+const calcModeToggle = document.querySelector<HTMLInputElement>('#calc-mode-toggle');
+
 if (!operatorItems.length) {
     throw new Error('At least one operator is required.');
 }
@@ -39,6 +42,8 @@ if (!operatorItems.length) {
 if (!hostInputs.length) {
     throw new Error('At least one host input with data-claptrap is required.');
 }
+
+type CalcMode = 'basic' | 'full';
 
 type Level = {
     value: number;
@@ -54,6 +59,20 @@ let isOpen = false;
 let levels: Level[] = [];
 let readyToApply = false;
 let activeHostInput: HTMLInputElement = hostInputs[0];
+
+function getCalcMode(): CalcMode {
+    return activeHostInput.dataset.claptrapCalc === 'full' ? 'full' : 'basic';
+}
+
+function isFullMode(): boolean {
+    return getCalcMode() === 'full';
+}
+
+function applyCalcModeUI(): void {
+    const full = isFullMode();
+    if (operatorPicker) operatorPicker.hidden = !full;
+    if (timelineSection) timelineSection.hidden = !full;
+}
 
 function getHostConfig(host: HTMLInputElement): HostConfig {
     const mode = (host.dataset.claptrapMode as HostMode | undefined) ?? 'currency';
@@ -136,17 +155,22 @@ function renderTimeline(): void {
         value.className = 'widget__timeline-value';
         value.textContent = formatNumberForDisplay(level.value, getActiveConfig());
 
-        const op = document.createElement('span');
-        op.className = 'widget__operator-op';
-        op.textContent = level.operatorToPrev ?? '';
+        item.append(value);
 
-        item.append(value, op);
+        // Solo mostrar operador si existe (no en el primer nivel)
+        if (level.operatorToPrev) {
+            const op = document.createElement('span');
+            op.className = 'widget__operator-op';
+            op.textContent = level.operatorToPrev;
+            item.append(op);
+        }
+
         timelineList.append(item);
     });
 }
 
 function currentOperator(): string {
-    return operatorItems[operatorIndex]?.dataset.op ?? '%';
+    return operatorItems[operatorIndex]?.dataset.op ?? '+';
 }
 
 function paintOperator(index: number): void {
@@ -165,7 +189,9 @@ function moveOperator(step: -1 | 1): void {
 }
 
 function syncPreview(): void {
-    draftInput.value = rawDraft ? formatRawForDraftInput(rawDraft, getActiveConfig()) : '';
+    // Durante la edición, mostrar exactamente lo que el usuario escribió (sin reformateo)
+    draftInput.value = rawDraft;
+    // El preview abajo sí muestra el número formateado con guía visual
     previewValue.textContent = formatNumberForDisplay(computePreviewNumber(), getActiveConfig());
 }
 
@@ -213,6 +239,7 @@ function openWidget(): void {
 
     rawDraft = normalizeHostValue(activeHostInput.value, getActiveConfig());
     draftInput.placeholder = getActiveConfig().mode === 'currency' ? '$ 0' : '0';
+    applyCalcModeUI();
     syncPreview();
 
     paintOperator(operatorIndex);
@@ -235,7 +262,8 @@ function closeWidget(): void {
 }
 
 function applyToHost(): void {
-    activeHostInput.value = previewValue.textContent ?? '0';
+    const result = computePreviewNumber();
+    activeHostInput.value = formatNumberForHost(result, getActiveConfig());
     closeWidget();
     activeHostInput.dispatchEvent(new Event('input', { bubbles: true }));
     activeHostInput.dispatchEvent(new Event('change', { bubbles: true }));
@@ -288,6 +316,7 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     }
 
     if (event.key === 'ArrowLeft') {
+        if (!isFullMode()) return;
         event.preventDefault();
         moveOperator(-1);
         resetApplyState();
@@ -295,6 +324,7 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     }
 
     if (event.key === 'ArrowRight') {
+        if (!isFullMode()) return;
         event.preventDefault();
         moveOperator(1);
         resetApplyState();
@@ -302,6 +332,7 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     }
 
     if (event.key === 'ArrowDown') {
+        if (!isFullMode()) return;
         event.preventDefault();
         pushLevel();
         draftInput.focus();
@@ -310,6 +341,15 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
 
     if (event.key === 'Enter') {
         event.preventDefault();
+
+        // Basic mode: single Enter inyecta directamente
+        if (!isFullMode()) {
+            if (hasDraftValue()) {
+                applyToHost();
+            }
+            return;
+        }
+
         if (hasDraftValue()) {
             // Enter con valor: confirma el nivel actual
             pushLevel();
@@ -330,6 +370,7 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     }
 
     if (event.key === 'Backspace' && !hasDraftValue()) {
+        if (!isFullMode()) return;
         event.preventDefault();
         popLastLevel();
         draftInput.focus();
@@ -343,3 +384,10 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
 
 syncPreview();
 paintOperator(operatorIndex);
+
+calcModeToggle?.addEventListener('change', () => {
+    const calc: CalcMode = calcModeToggle.checked ? 'full' : 'basic';
+    hostInputs.forEach((host) => {
+        host.dataset.claptrapCalc = calc;
+    });
+});

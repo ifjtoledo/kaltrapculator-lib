@@ -146,44 +146,38 @@ export function formatNumberForDisplay(value: number, config: HostConfig): strin
     return `${config.currency} ${formatter.format(value)}`;
 }
 
-export function formatRawForDraftInput(raw: string, config: HostConfig): string {
-    const numeric = parseRawNumber(raw);
-    if (numeric === null) {
-        return '';
-    }
-
-    const decimals = normalizedDecimals(config.decimals);
-
-    if (config.mode === 'numeric-strict') {
-        return new Intl.NumberFormat(config.locale, {
-            useGrouping: true,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(Math.trunc(numeric));
-    }
-
-    if (config.mode === 'numeric') {
-        return new Intl.NumberFormat(config.locale, {
-            useGrouping: true,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: decimals,
-        }).format(numeric);
-    }
-
-    // Para currency, mostrar con separadores pero SIN símbolo en el input de edición
-    return new Intl.NumberFormat(config.locale, {
-        useGrouping: true,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: decimals,
-    }).format(numeric);
-}
-
 export function formatRawForDisplay(raw: string, config: HostConfig): string {
     const numeric = parseRawNumber(raw);
     if (numeric === null) {
         return config.mode === 'currency' ? `${config.currency} 0` : '0';
     }
     return formatNumberForDisplay(numeric, config);
+}
+
+export function formatRawForDraftInput(raw: string, config: HostConfig): string {
+    if (!raw) {
+        return '';
+    }
+    // Devuelve el número puro, sin símbolo ni separadores
+    // Solo para que el usuario pueda escribir libremente en el input
+    const decimals = normalizedDecimals(config.decimals);
+    const numeric = parseRawNumber(raw);
+
+    if (numeric === null) {
+        return ''; // No 'raw', devolver vacío
+    }
+
+    // Si está en modo strict, truncar a entero
+    if (config.mode === 'numeric-strict') {
+        return String(Math.trunc(numeric));
+    }
+
+    // Para otros modos, mostrar con máximo de decimales pero sin separadores
+    if (decimals === 0) {
+        return String(Math.trunc(numeric));
+    }
+
+    return numeric.toFixed(decimals);
 }
 
 export function parseRawNumber(raw: string): number | null {

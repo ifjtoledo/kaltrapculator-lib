@@ -13,11 +13,20 @@
 
 <body>
     <main class="lab">
+        <fieldset class="lab__config">
+            <legend class="lab__config-legend">Modo del widget</legend>
+            <label class="lab__toggle">
+                <input type="checkbox" id="calc-mode-toggle" checked />
+                <span>Operaciones matemáticas</span>
+            </label>
+        </fieldset>
+
         <section class="lab__host-field" aria-label="Campo host">
             <input class="lab__host-input" id="price-host" name="price" type="text" inputmode="decimal"
                 autocomplete="off" placeholder="$ 0" aria-label="Monto monetario" aria-haspopup="dialog"
                 aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap data-claptrap-currency="$"
-                data-claptrap-decimals="2" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false" />
+                data-claptrap-decimals="2" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false"
+                data-claptrap-calc="full" />
         </section>
 
         <section class="lab__host-field" aria-label="Campo numerico puro">
@@ -25,14 +34,15 @@
                 autocomplete="off" placeholder="0" aria-label="Cantidad numerica" aria-haspopup="dialog"
                 aria-controls="claptrap-widget" aria-expanded="false" readonly data-claptrap
                 data-claptrap-mode="numeric" data-claptrap-decimals="2" data-claptrap-locale="es-CO"
-                data-claptrap-allow-negative="false" />
+                data-claptrap-allow-negative="false" data-claptrap-calc="full" />
         </section>
 
         <section class="lab__host-field" aria-label="Campo numerico estricto entero">
             <input class="lab__host-input" id="units-host" name="units" type="number" step="1" autocomplete="off"
                 placeholder="0" aria-label="Unidades enteras" aria-haspopup="dialog" aria-controls="claptrap-widget"
                 aria-expanded="false" readonly data-claptrap data-claptrap-mode="numeric-strict"
-                data-claptrap-decimals="0" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false" />
+                data-claptrap-decimals="0" data-claptrap-locale="es-CO" data-claptrap-allow-negative="false"
+                data-claptrap-calc="full" />
         </section>
 
         <section id="claptrap-widget" class="widget" role="dialog" aria-modal="true" aria-label="Claptrap widget"
@@ -48,12 +58,12 @@
 
             <section class="widget__operator-picker" aria-label="Seleccion de operador">
                 <ul class="widget__operator-list" role="listbox" aria-label="Operadores">
-                    <li class="widget__operator-item widget__operator-item--active" aria-selected="true" data-op="%">%
+                    <li class="widget__operator-item widget__operator-item--active" aria-selected="true" data-op="+">+
                     </li>
-                    <li class="widget__operator-item" aria-selected="false" data-op="+">+</li>
                     <li class="widget__operator-item" aria-selected="false" data-op="-">-</li>
                     <li class="widget__operator-item" aria-selected="false" data-op="*">*</li>
                     <li class="widget__operator-item" aria-selected="false" data-op="/">/</li>
+                    <li class="widget__operator-item" aria-selected="false" data-op="%">%</li>
                 </ul>
             </section>
 

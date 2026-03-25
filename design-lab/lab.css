@@ -211,3 +211,44 @@ body.lab--modal-open::before {
     color: #121212;
     border-color: #4d9fe1;
 }
+
+/* ─── Config fieldset ─── */
+
+.lab__config {
+    border: var(--border);
+    border-radius: 8px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface);
+    width: min(360px, 92vw);
+}
+
+.lab__config-legend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 0 var(--space-1);
+}
+
+.lab__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.lab__toggle input[type="checkbox"] {
+    accent-color: var(--focus);
+    width: 16px;
+    height: 16px;
+}
+
+/* ─── Hidden widget sections ─── */
+
+.widget__operator-picker[hidden],
+.widget__timeline[hidden] {
+    display: none;
+}
