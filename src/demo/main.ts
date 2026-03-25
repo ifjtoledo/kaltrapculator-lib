@@ -1,3 +1,3 @@
-import { registerKaltrapCulator } from "../register";
+import { registerKaltrapCulator } from '../register';
 
 registerKaltrapCulator();
