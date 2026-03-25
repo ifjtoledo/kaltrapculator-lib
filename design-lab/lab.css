@@ -30,6 +30,27 @@ body {
     background: var(--bg);
 }
 
+body.lab--modal-open {
+    overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 6, 12, 0.72);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease-out;
+    z-index: 90;
+}
+
+body.lab--modal-open::before {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .lab {
     width: min(var(--layout-max), 92vw);
     margin: 0 auto;
@@ -73,6 +94,11 @@ body {
     width: min(360px, 92vw);
     max-height: min(560px, 88vh);
     overflow: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
     border: var(--border);
     border-radius: var(--radius);
     background: var(--surface);

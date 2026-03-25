@@ -1,3 +1,15 @@
+import {
+    formatNumberForDisplay,
+    formatNumberForHost,
+    formatRawForDraftInput,
+    formatRawForDisplay,
+    normalizeHostValue,
+    parseRawNumber,
+    sanitizeRawInput,
+    type HostConfig,
+    type HostMode,
+} from './number-format';
+
 function mustQuery<T extends Element>(selector: string): T {
     const element = document.querySelector<T>(selector);
     if (!element) {
@@ -6,7 +18,9 @@ function mustQuery<T extends Element>(selector: string): T {
     return element;
 }
 
-const hostInput = mustQuery<HTMLInputElement>('input[data-claptrap]');
+const hostInputs = Array.from(
+    document.querySelectorAll<HTMLInputElement>('input[data-claptrap]')
+);
 const widgetShell = mustQuery<HTMLElement>('.widget');
 const timelineList = mustQuery<HTMLOListElement>('.widget__timeline-list');
 const draftInput = mustQuery<HTMLInputElement>('.widget__draft-input');
@@ -22,14 +36,13 @@ if (!operatorItems.length) {
     throw new Error('At least one operator is required.');
 }
 
-const currency = hostInput.dataset.claptrapCurrency ?? '$';
-const locale = hostInput.dataset.claptrapLocale ?? 'es-CO';
-const decimals = Number.parseInt(hostInput.dataset.claptrapDecimals ?? '2', 10);
-const allowNegative = hostInput.dataset.claptrapAllowNegative === 'true';
+if (!hostInputs.length) {
+    throw new Error('At least one host input with data-claptrap is required.');
+}
 
 type Level = {
     value: number;
-    operator: string;
+    operatorToPrev: string | null;
 };
 
 let operatorIndex = Math.max(
@@ -37,81 +50,36 @@ let operatorIndex = Math.max(
     operatorItems.findIndex((item) => item.classList.contains('widget__operator-item--active'))
 );
 let rawDraft = '';
-let enterStreak = 0;
 let isOpen = false;
 let levels: Level[] = [];
+let readyToApply = false;
+let activeHostInput: HTMLInputElement = hostInputs[0];
+
+function getHostConfig(host: HTMLInputElement): HostConfig {
+    const mode = (host.dataset.claptrapMode as HostMode | undefined) ?? 'currency';
+    const parsedDecimals = Number.parseInt(host.dataset.claptrapDecimals ?? '2', 10);
+
+    return {
+        mode: mode === 'numeric' || mode === 'numeric-strict' ? mode : 'currency',
+        currency: host.dataset.claptrapCurrency ?? '$',
+        locale: host.dataset.claptrapLocale ?? 'es-CO',
+        decimals: Number.isNaN(parsedDecimals) ? 2 : Math.max(0, parsedDecimals),
+        allowNegative: host.dataset.claptrapAllowNegative === 'true',
+    };
+}
+
+function getActiveConfig(): HostConfig {
+    return getHostConfig(activeHostInput);
+}
 
 function resetApplyState() {
-    enterStreak = 0;
+    readyToApply = false;
     widgetShell.classList.remove('widget--ready-to-apply');
 }
 
 function markReadyToApply() {
-    enterStreak = 1;
+    readyToApply = true;
     widgetShell.classList.add('widget--ready-to-apply');
-}
-
-function sanitizeNumeric(value: string): string {
-    let sanitized = value.replace(/[^\d.,-]/g, '').replace(/,/g, '.');
-
-    if (!allowNegative) {
-        sanitized = sanitized.replace(/-/g, '');
-    } else {
-        sanitized = sanitized.replace(/(?!^)-/g, '');
-    }
-
-    const firstDot = sanitized.indexOf('.');
-    if (firstDot !== -1) {
-        const intPart = sanitized.slice(0, firstDot + 1);
-        const rest = sanitized.slice(firstDot + 1).replace(/\./g, '');
-        sanitized = intPart + rest;
-    }
-
-    if (decimals >= 0 && firstDot !== -1) {
-        const [whole, fraction = ''] = sanitized.split('.');
-        sanitized = `${whole}.${fraction.slice(0, decimals)}`;
-    }
-
-    return sanitized;
-}
-
-function formatCurrency(raw: string): string {
-    if (!raw || raw === '-' || raw === '.' || raw === '-.') {
-        return `${currency} 0`;
-    }
-
-    const numeric = Number(raw);
-    if (Number.isNaN(numeric)) {
-        return `${currency} 0`;
-    }
-
-    const formatter = new Intl.NumberFormat(locale, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: Math.max(0, decimals),
-    });
-
-    return `${currency} ${formatter.format(numeric)}`;
-}
-
-function formatCurrencyFromNumber(value: number): string {
-    const formatter = new Intl.NumberFormat(locale, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: Math.max(0, decimals),
-    });
-    return `${currency} ${formatter.format(value)}`;
-}
-
-function parseRawNumber(raw: string): number | null {
-    if (!raw || raw === '-' || raw === '.' || raw === '-.') {
-        return null;
-    }
-
-    const numeric = Number(raw);
-    if (Number.isNaN(numeric)) {
-        return null;
-    }
-
-    return numeric;
 }
 
 function hasDraftValue(): boolean {
@@ -145,13 +113,13 @@ function computePreviewNumber(): number {
     let result = levels[0].value;
 
     for (let index = 1; index < levels.length; index += 1) {
-        const prevOperator = levels[index - 1].operator;
-        result = applyOperation(result, prevOperator, levels[index].value);
+        const operator = levels[index].operatorToPrev ?? '+';
+        result = applyOperation(result, operator, levels[index].value);
     }
 
     if (draftValue !== null) {
-        const tailOperator = levels[levels.length - 1].operator;
-        result = applyOperation(result, tailOperator, draftValue);
+        const draftOperator = currentOperator();
+        result = applyOperation(result, draftOperator, draftValue);
     }
 
     return result;
@@ -166,11 +134,11 @@ function renderTimeline(): void {
 
         const value = document.createElement('span');
         value.className = 'widget__timeline-value';
-        value.textContent = formatCurrencyFromNumber(level.value);
+        value.textContent = formatNumberForDisplay(level.value, getActiveConfig());
 
         const op = document.createElement('span');
-        op.className = 'widget__timeline-op';
-        op.textContent = level.operator;
+        op.className = 'widget__operator-op';
+        op.textContent = level.operatorToPrev ?? '';
 
         item.append(value, op);
         timelineList.append(item);
@@ -197,8 +165,8 @@ function moveOperator(step: -1 | 1): void {
 }
 
 function syncPreview(): void {
-    draftInput.value = rawDraft ? formatCurrency(rawDraft) : '';
-    previewValue.textContent = formatCurrencyFromNumber(computePreviewNumber());
+    draftInput.value = rawDraft ? formatRawForDraftInput(rawDraft, getActiveConfig()) : '';
+    previewValue.textContent = formatNumberForDisplay(computePreviewNumber(), getActiveConfig());
 }
 
 function pushLevel(): void {
@@ -209,12 +177,23 @@ function pushLevel(): void {
 
     levels.push({
         value,
-        operator: currentOperator(),
+        operatorToPrev: levels.length === 0 ? null : currentOperator(),
     });
 
     renderTimeline();
 
     rawDraft = '';
+    syncPreview();
+    resetApplyState();
+}
+
+function popLastLevel(): void {
+    if (levels.length === 0) {
+        return;
+    }
+
+    levels.pop();
+    renderTimeline();
     syncPreview();
     resetApplyState();
 }
@@ -226,11 +205,14 @@ function openWidget(): void {
 
     isOpen = true;
     widgetShell.hidden = false;
+    document.body.classList.add('lab--modal-open');
+    activeHostInput.setAttribute('aria-expanded', 'true');
     resetApplyState();
     levels = [];
     renderTimeline();
 
-    rawDraft = sanitizeNumeric(hostInput.value);
+    rawDraft = normalizeHostValue(activeHostInput.value, getActiveConfig());
+    draftInput.placeholder = getActiveConfig().mode === 'currency' ? '$ 0' : '0';
     syncPreview();
 
     paintOperator(operatorIndex);
@@ -247,18 +229,33 @@ function closeWidget(): void {
 
     isOpen = false;
     widgetShell.hidden = true;
+    document.body.classList.remove('lab--modal-open');
+    activeHostInput.setAttribute('aria-expanded', 'false');
     resetApplyState();
 }
 
 function applyToHost(): void {
-    hostInput.value = previewValue.textContent ?? `${currency} 0`;
+    activeHostInput.value = previewValue.textContent ?? '0';
     closeWidget();
-    hostInput.dispatchEvent(new Event('input', { bubbles: true }));
-    hostInput.dispatchEvent(new Event('change', { bubbles: true }));
+    activeHostInput.dispatchEvent(new Event('input', { bubbles: true }));
+    activeHostInput.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
-hostInput.addEventListener('focus', openWidget);
-hostInput.addEventListener('click', openWidget);
+hostInputs.forEach((host) => {
+    host.addEventListener('pointerdown', (event: PointerEvent) => {
+        event.preventDefault();
+        activeHostInput = host;
+        openWidget();
+    });
+
+    host.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            activeHostInput = host;
+            openWidget();
+        }
+    });
+});
 
 cancelButton.addEventListener('click', closeWidget);
 applyButton.addEventListener('click', applyToHost);
@@ -273,7 +270,7 @@ operatorItems.forEach((item, idx) => {
 });
 
 draftInput.addEventListener('input', () => {
-    rawDraft = sanitizeNumeric(draftInput.value);
+    rawDraft = sanitizeRawInput(draftInput.value, getActiveConfig());
     syncPreview();
     resetApplyState();
 });
@@ -286,19 +283,21 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
         event.preventDefault();
         closeWidget();
-        hostInput.focus();
+        activeHostInput.focus();
         return;
     }
 
     if (event.key === 'ArrowLeft') {
         event.preventDefault();
         moveOperator(-1);
+        resetApplyState();
         return;
     }
 
     if (event.key === 'ArrowRight') {
         event.preventDefault();
         moveOperator(1);
+        resetApplyState();
         return;
     }
 
@@ -312,13 +311,28 @@ widgetShell.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
         event.preventDefault();
         if (hasDraftValue()) {
-            // Enter confirma el nivel actual y ejecuta el paso secuencial.
+            // Enter con valor: confirma el nivel actual
             pushLevel();
-        } else if (enterStreak === 0) {
+            // Doble Enter inyecta: el primer Enter deja listo para aplicar.
             markReadyToApply();
-        } else {
-            applyToHost();
+        } else if (levels.length > 0) {
+            // Enter vacío pero con niveles confirmados
+            if (!readyToApply) {
+                // Primer Enter vacío: marca como listo
+                markReadyToApply();
+            } else {
+                // Segundo Enter (doble): inyecta lo que esté en preview
+                applyToHost();
+            }
         }
+        // Si no hay valor en draft y no hay niveles, no hace nada
+        return;
+    }
+
+    if (event.key === 'Backspace' && !hasDraftValue()) {
+        event.preventDefault();
+        popLastLevel();
+        draftInput.focus();
         return;
     }
 
