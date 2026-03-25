@@ -115,7 +115,7 @@ describe('KaltrapCulatorElement', () => {
         it('renders 5 operator items', () => {
             const ops = qAll(el, '.operator-item');
             expect(ops).toHaveLength(5);
-            expect(ops.map(o => o.dataset.op)).toEqual(['+', '-', '*', '/', '%']);
+            expect(ops.map(o => (o as HTMLElement).dataset.op)).toEqual(['+', '-', '*', '/', '%']);
         });
 
         it('renders 3 theme dots', () => {
@@ -308,9 +308,8 @@ describe('KaltrapCulatorElement', () => {
 
         it('ignores ArrowLeft/Right in basic mode', () => {
             firePointerDown(hostStrict);
-            const ops = qAll<HTMLElement>(el, '.operator-item');
             fireKey(q(el, '.widget'), 'ArrowRight');
-            // Operator should not have moved (still first active from last full-mode use, but doesn't matter — operators are hidden)
+            // Operator should not have moved — operators are hidden in basic mode
             expect(q<HTMLElement>(el, '.operator-picker').hidden).toBe(true);
         });
 
