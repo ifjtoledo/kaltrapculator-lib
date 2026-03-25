@@ -108,8 +108,16 @@
             </section>
 
             <footer class="widget__actions">
-                <button type="button" data-action="cancel" aria-label="Cancelar" title="Cancelar">x</button>
-                <button type="button" data-action="apply" aria-label="Aplicar" title="Aplicar">ok</button>
+                <span class="widget__theme-picker" aria-label="Selector de tema">
+                    <button type="button" class="widget__theme-dot widget__theme-dot--dark widget__theme-dot--active"
+                        data-theme="dark" aria-label="Tema oscuro" title="Oscuro"></button>
+                    <button type="button" class="widget__theme-dot widget__theme-dot--light" data-theme="light"
+                        aria-label="Tema claro" title="Claro"></button>
+                    <button type="button" class="widget__theme-dot widget__theme-dot--borderlands"
+                        data-theme="borderlands" aria-label="Tema Borderlands" title="Borderlands"></button>
+                </span>
+                <button type="button" data-action="cancel" aria-label="Cancelar" title="Cancelar">&#x2716;</button>
+                <button type="button" data-action="apply" aria-label="Aplicar" title="Aplicar">&#x2714;</button>
             </footer>
         </section>
     </main>

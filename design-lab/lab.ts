@@ -404,3 +404,37 @@ tabs.forEach((tab) => {
         });
     });
 });
+
+/* ─── Theme switcher with localStorage persistence ─── */
+
+const THEME_KEY = 'claptrap-theme';
+const themeDots = Array.from(document.querySelectorAll<HTMLButtonElement>('.widget__theme-dot'));
+
+function applyTheme(theme: string): void {
+    widgetShell.setAttribute('data-theme', theme);
+    themeDots.forEach((dot) => {
+        dot.classList.toggle('widget__theme-dot--active', dot.dataset.theme === theme);
+    });
+    try {
+        localStorage.setItem(THEME_KEY, theme);
+    } catch {
+        // Storage unavailable — silently degrade
+    }
+}
+
+// Restore saved theme
+const savedTheme = (() => {
+    try {
+        return localStorage.getItem(THEME_KEY);
+    } catch {
+        return null;
+    }
+})();
+applyTheme(savedTheme ?? 'dark');
+
+themeDots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+        const theme = dot.dataset.theme;
+        if (theme) applyTheme(theme);
+    });
+});
