@@ -17,6 +17,7 @@ function createHost(id: string, attrs: Record<string, string> = {}): HTMLInputEl
     input.id = id;
     input.className = 'lab__host-input';
     input.readOnly = true;
+    input.setAttribute('aria-expanded', 'false');
     input.setAttribute('data-kaltrap', '');
     for (const [k, v] of Object.entries(attrs)) input.setAttribute(k, v);
     document.body.appendChild(input);
@@ -502,9 +503,8 @@ describe('Basic mode: operator picker and timeline hidden', () => {
         expect(lab.operatorPicker.hidden).toBe(false);
     });
 
-    it('shows timeline when calc mode is full', () => {
+    it('hides empty timeline in full mode (shown once levels exist)', () => {
         fireKey(lab.priceHost, 'Enter');
-        // Timeline hidden when empty in full mode
         expect(lab.timelineSection.hidden).toBe(true);
     });
 });
