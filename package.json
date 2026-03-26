@@ -1,6 +1,6 @@
 {
   "name": "kaltrapculator-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-dependency Web Component that turns any <input> into a calculator-assisted field. Keyboard-first, 3 themes, i18n-ready, 5.9 KB gzipped.",
   "type": "module",
   "main": "./dist/kaltrapculator.umd.js",
