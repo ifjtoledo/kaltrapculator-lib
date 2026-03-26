@@ -1,0 +1,13 @@
+# Source & dev files (only dist/ is published via "files" in package.json)
+src/
+design-lab/
+public/
+index.html
+style.css
+vite.config.ts
+tsconfig.json
+tsconfig.build.json
+vitest.config.*
+.gitignore
+.github/
+DESIGN_WORKFLOW.md
