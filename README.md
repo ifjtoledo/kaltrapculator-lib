@@ -1,7 +1,8 @@
 # &lt;kaltrap-culator&gt;
 
 A zero-dependency Web Component that turns any `<input>` into a calculator-assisted field.  
-Type, chain operations, preview results in real time — all from the keyboard.
+Type, chain operations, preview results in real time — all from the keyboard.  
+Locale-aware thousand separators and decimal formatting included.
 
 **5.9 KB gzipped** &middot; ES + UMD &middot; Shadow DOM &middot; 3 themes &middot; Full + Basic modes &middot; i18n-ready
 
