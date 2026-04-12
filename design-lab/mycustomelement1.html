@@ -12,7 +12,23 @@
 </head>
 
 <body>
-    <modalete-dialog data-modalete></modalete-dialog>
+    <modalete-ui data-modalete></modalete-ui>
+    <button id="btn-test">Mostrar modal personalizado</button>
+    <script type="module">
+        import './mycustomelement1.ts';
+        const modal = document.querySelector('[data-modalete]');
+        const btn = document.getElementById('btn-test');
+        btn.addEventListener('click', async () => {
+            const resultado = await modal.confirm({
+                title: '¿Deseas eliminar este elemento?',
+                message: 'Esta acción no se puede deshacer.',
+                confirmText: 'Sí, eliminar',
+                cancelText: 'Cancelar'
+            });
+            console.log('El hobbit eligió:', resultado);
+        });
+
+    </script>
 </body>
 
 </html>
